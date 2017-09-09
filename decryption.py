@@ -1,9 +1,9 @@
 from caesar import Caesar
 from sklearn.cross_validation import train_test_split
-from keras.models import Sequential
+from keras.models import Sequential,load_model
 from keras.layers import Dense
 from keras.utils import to_categorical
-
+import os
 #Preprocess the data
 
 x,y=Caesar().load_data()
@@ -22,8 +22,13 @@ model.add(Dense(26,activation='softmax'))
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 #Training
+if os.path.exists('mymodel.h5'):
+	model=load_model('mymodel.h5')
+	print(model.evaluate(X_test,Y_test)[1]*100)
 
-model.fit(X_train,Y_train,epochs=300)
-print(model.evaluate(X_test,Y_test))
+else:
+	model.fit(X_train,Y_train,epochs=300)
+	model.save('mymodel.h5')
+	print(model.evaluate(X_test,Y_test))
 
 
